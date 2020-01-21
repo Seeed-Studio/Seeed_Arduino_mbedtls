@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <esp_attr.h>
-#include <esp_heap_caps.h>
 #include <sdkconfig.h>
-#include "esp_mem.h"
+#include <stdlib.h>
+#define IRAM_ATTR
 
 #ifndef CONFIG_MBEDTLS_CUSTOM_MEM_ALLOC
 
@@ -32,7 +31,7 @@ IRAM_ATTR void *esp_mbedtls_mem_calloc(size_t n, size_t size)
 
 IRAM_ATTR void esp_mbedtls_mem_free(void *ptr)
 {
-    return heap_caps_free(ptr);
+    return free(ptr);
 }
 
 #endif /* !CONFIG_MBEDTLS_CUSTOM_MEM_ALLOC */

@@ -43,13 +43,12 @@
 
 #include <string.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <unistd.h>
-#include <netdb.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include <stdint.h>
+#include "Seeed_atUnified.h"
 
 /*
  * Prepare for using the sockets interface
@@ -115,7 +114,7 @@ int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host, const char 
             break;
         }
 
-        close( fd );
+        closesocket( fd );
         ret = MBEDTLS_ERR_NET_CONNECT_FAILED;
     }
 
@@ -163,7 +162,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
 #if SO_REUSE
         if ( setsockopt( fd, SOL_SOCKET, SO_REUSEADDR,
                          (const char *) &n, sizeof( n ) ) != 0 ) {
-            close( fd );
+            closesocket( fd );
             ret = MBEDTLS_ERR_NET_SOCKET_FAILED;
             continue;
         }
@@ -172,7 +171,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
         serv_addr = (struct sockaddr_in *)cur->ai_addr;
         serv_addr->sin_addr.s_addr = htonl(INADDR_ANY); /* Any incoming interface */
         if ( bind( fd, (struct sockaddr *)serv_addr, cur->ai_addrlen ) != 0 ) {
-            close( fd );
+            closesocket( fd );
             ret = MBEDTLS_ERR_NET_BIND_FAILED;
             continue;
         }
@@ -180,7 +179,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
         /* Listen only makes sense for TCP */
         if ( proto == MBEDTLS_NET_PROTO_TCP ) {
             if ( listen( fd, MBEDTLS_NET_LISTEN_BACKLOG ) != 0 ) {
-                close( fd );
+                closesocket( fd );
                 ret = MBEDTLS_ERR_NET_LISTEN_FAILED;
                 continue;
             }
@@ -346,7 +345,7 @@ int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
         return ( MBEDTLS_ERR_NET_INVALID_CONTEXT );
     }
 
-    ret = (int) read( fd, buf, len );
+    ret = (int) atu_recv_r( fd, buf, len, 0 );
 
     if ( ret < 0 ) {
         if ( net_would_block( ctx, &error ) != 0 ) {
@@ -421,7 +420,7 @@ int mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len )
         return ( MBEDTLS_ERR_NET_INVALID_CONTEXT );
     }
 
-    ret = (int) write( fd, buf, len );
+    ret = (int) atu_send_r( fd, buf, len, 0 );
 
     if ( ret < 0 ) {
         if ( net_would_block( ctx, &error ) != 0 ) {
@@ -452,7 +451,7 @@ void mbedtls_net_free( mbedtls_net_context *ctx )
     }
 
     shutdown( ctx->fd, 2 );
-    close( ctx->fd );
+    closesocket( ctx->fd );
 
     ctx->fd = -1;
 }

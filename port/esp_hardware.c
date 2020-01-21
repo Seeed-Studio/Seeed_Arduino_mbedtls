@@ -4,6 +4,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
+#include "Arduino.h"
 #include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,7 +19,16 @@
 int mbedtls_hardware_poll( void *data,
                            unsigned char *output, size_t len, size_t *olen )
 {
-    esp_fill_random(output, len);
+    static int srand_set;
+    size_t i;
+
+    if (!srand_set) {
+        srand_set = 1;
+        srand(micros());
+    }
+    for (i = 0; i < len; i++) {
+        output[i] = rand() % 0x100;
+    }
     *olen = len;
     return 0;
 }

@@ -19,6 +19,7 @@
 #include "mbedtls/debug.h"
 #include "mbedtls/ssl.h"
 #include "mbedtls/esp_debug.h"
+#include "esp32-hal-log.h"
 
 #ifdef CONFIG_MBEDTLS_DEBUG
 static const char *TAG = "mbedtls";
@@ -46,7 +47,7 @@ void mbedtls_esp_enable_debug_log(mbedtls_ssl_config *conf, int threshold)
         level = ESP_LOG_VERBOSE;
         break;
     }
-    esp_log_level_set(TAG, level);
+    // esp_log_level_set(TAG, level);
 }
 
 void mbedtls_esp_disable_debug_log(mbedtls_ssl_config *conf)
@@ -75,16 +76,20 @@ static void mbedtls_esp_debug(void *ctx, int level,
 
     switch(level) {
     case 1:
-        ESP_LOGW(TAG, "%s:%d %s", file, line, str);
+        // ESP_LOGW(TAG, "%s:%d %s", file, line, str);
+        xprintf("%s:%d %s\r\n", file, line, str);
         break;
     case 2:
-        ESP_LOGI(TAG, "%s:%d %s", file, line, str);
+        // ESP_LOGI(TAG, "%s:%d %s", file, line, str);
+        xprintf("%s:%d %s\r\n", file, line, str);
         break;
     case 3:
-        ESP_LOGD(TAG, "%s:%d %s", file, line, str);
+        // ESP_LOGD(TAG, "%s:%d %s", file, line, str);
+        xprintf("%s:%d %s\r\n", file, line, str);
         break;
     case 4:
-        ESP_LOGV(TAG, "%s:%d %s", file, line, str);
+        // ESP_LOGV(TAG, "%s:%d %s", file, line, str);
+        xprintf("%s:%d %s\r\n", file, line, str);
         break;
     default:
         ESP_LOGE(TAG, "Unexpected log level %d: %s", level, str);

@@ -16,5 +16,5 @@
 
 #include <stdlib.h>
 
-void* esp_mbedtls_mem_calloc(size_t n, size_t size);
-void esp_mbedtls_mem_free(void* ptr);
+void *esp_mbedtls_mem_calloc(size_t n, size_t size);
+void esp_mbedtls_mem_free(void *ptr);

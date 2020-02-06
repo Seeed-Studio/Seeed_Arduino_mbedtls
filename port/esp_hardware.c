@@ -22,6 +22,9 @@ int mbedtls_hardware_poll( void *data,
     static int srand_set;
     size_t i;
 
+    // prevent warning
+    data = data;
+
     if (!srand_set) {
         srand_set = 1;
         srand(micros());

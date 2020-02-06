@@ -1,3 +1,4 @@
 [submodule "mbedtls"]
         path = mbedtls
         url = https://github.com/espressif/mbedtls.git
+        # version = f5f2e5926cd294ae7cb579ff6a12ad9303caeb6e

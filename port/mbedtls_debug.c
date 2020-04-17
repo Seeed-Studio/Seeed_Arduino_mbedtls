@@ -19,7 +19,7 @@
 #include "mbedtls/debug.h"
 #include "mbedtls/ssl.h"
 #include "mbedtls/esp_debug.h"
-#include "esp32-hal-log.h"
+#include "esp_hal_log.h"
 
 #ifdef CONFIG_MBEDTLS_DEBUG
 static const char *TAG = "mbedtls";

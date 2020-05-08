@@ -18,7 +18,7 @@ for %%i in (..\mbedtls\library\*.c) do (
 	if /i "!fname!" equ "timing.c" set _ignore=1
 	:: if /i "!fname!" equ "x509_crt.c" set _ignore=1
 	if "!_ignore!" == "" (
-		mklink library\!fname! "..\%%i"
+		call :FileLink library\!fname! "..\%%i"
 	)
 )
 
@@ -29,7 +29,7 @@ for %%i in (..\mbedtls\include\mbedtls\*.h) do (
 	set _ignore=
 	if /i "!fname!" equ "config.h" set _ignore=1
 	if "!_ignore!" == "" (
-		mklink mbedtls\!fname! "..\%%i"
+		call :FileLink mbedtls\!fname! "..\%%i"
 	)
 )
 
@@ -46,17 +46,17 @@ for %%i in (..\port\*.c) do (
 	if /i "!fname!" equ "esp_sha256.c" set _ignore=1
 	if /i "!fname!" equ "esp_sha512.c" set _ignore=1
 	if "!_ignore!" == "" (
-		mklink port\!fname! "..\%%i"
+		call :FileLink port\!fname! "..\%%i"
 	)
 )
 
 for %%i in (..\port\include\*.h) do (
 	call :GetFileName fname "%%i"
-	mklink !fname! "%%i"
+	call :FileLink !fname! "%%i"
 )
 
-mklink mbedtls\config.h ..\..\port\include\mbedtls\esp_config.h
-mklink mbedtls\esp_debug.h ..\..\port\include\mbedtls\esp_debug.h
+call :FileLink mbedtls\config.h ..\..\port\include\mbedtls\esp_config.h
+call :FileLink mbedtls\esp_debug.h ..\..\port\include\mbedtls\esp_debug.h
 
 
 goto :eof
@@ -72,5 +72,27 @@ REM --Get the file name in the path
 		if "%~1" neq "" (
 			set %~1=%filename%
 		)
+	)
+goto :eof
+
+:FileLink
+REM --Make a file linkage, could be mklink or copy directly.
+	setlocal
+	set link=%~1
+	set tar=%~2
+
+	:: mklink %link% %tar%
+
+	:: up    link
+	:: or
+	:: below copy
+
+	set linkpath=%~p1
+	set linkname=%~nx1
+	cd %linkpath%
+	echo copy %tar% %linkname%
+	copy %tar% %linkname%
+	(
+		endlocal & REM -- RETURN VALUES
 	)
 goto :eof

@@ -2,6 +2,9 @@
 setlocal EnableExtensions
 setlocal EnableDelayedExpansion
 
+:: Change current directory for 'Run As Admin'
+cd %~dp0
+
 setlocal
 
 cd ..\src

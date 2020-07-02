@@ -27,7 +27,7 @@
 #ifndef MBEDTLS_CONFIG_H
 #define MBEDTLS_CONFIG_H
 
-#include "sdkconfig.h"
+#include "arduino_config.h"
 #define CONFIG_MBEDTLS_CUSTOM_MEM_ALLOC	1
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_DEPRECATE)

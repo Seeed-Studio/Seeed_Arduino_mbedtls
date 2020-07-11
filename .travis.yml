@@ -8,12 +8,18 @@ cache:
     - ~/.arduino15/packages/
 
 before_install:
-   - wget -c https://files.seeedstudio.com/arduino/seeed-arduino-ci.sh
+   - wget -c https://github.com/Seeed-Studio/Seeed_Arduino_atUnified/raw/master/seeed-arduino-ci.sh
 
 script:
    - chmod +x seeed-arduino-ci.sh
    - cat $PWD/seeed-arduino-ci.sh
-   - bash $PWD/seeed-arduino-ci.sh test
+   - $PWD/seeed-arduino-ci.sh -b "Seeeduino:samd:seeed_wio_terminal" -s 
+     nothing 
+     Seeed-Studio/esp-at-lib.git 
+     Seeed-Studio/Seeed_Arduino_FreeRTOS.git 
+     Seeed-Studio/Seeed_Arduino_atUnified.git 
+     Seeed-Studio/Seeed_Arduino_atWiFi.git 
+     Seeed-Studio/Seeed_Arduino_mbedtls.git
 
 notifications:
   email:

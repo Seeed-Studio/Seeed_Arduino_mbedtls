@@ -339,24 +339,23 @@ int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
 {
     int ret;
     int fd = ((mbedtls_net_context *) ctx)->fd;
-    int error = 0;
 
     if ( fd < 0 ) {
         return ( MBEDTLS_ERR_NET_INVALID_CONTEXT );
     }
 
-    ret = (int) atu_recv_r( fd, buf, len, 0 );
+    ret = (int) atu_recv_r( fd, buf, len, MSG_DONTWAIT);
 
     if ( ret < 0 ) {
-        if ( net_would_block( ctx, &error ) != 0 ) {
+        if (errno == EWOULDBLOCK) {
             return ( MBEDTLS_ERR_SSL_WANT_READ );
         }
 
-        if ( error == EPIPE || error == ECONNRESET ) {
+        if (errno == EPIPE || errno == ECONNRESET) {
             return ( MBEDTLS_ERR_NET_CONN_RESET );
         }
 
-        if ( error == EINTR ) {
+        if (errno == EINTR) {
             return ( MBEDTLS_ERR_SSL_WANT_READ );
         }
 

@@ -61,10 +61,11 @@ static int net_prepare( void )
 static int mbedtls_net_errno(int fd)
 {
     int sock_errno = 0;
+#if 0
     u32_t optlen = sizeof(sock_errno);
 
     getsockopt(fd, SOL_SOCKET, SO_ERROR, &sock_errno, (socklen_t *)&optlen);
-
+#endif 
     return sock_errno;
 }
 
@@ -87,6 +88,7 @@ int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host, const char 
     if ( ( ret = net_prepare() ) != 0 ) {
         return ( ret );
     }
+#if 0
 
     /* Do name resolution with both IPv6 and IPv4 */
     memset( &hints, 0, sizeof( hints ) );
@@ -119,7 +121,7 @@ int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host, const char 
     }
 
     freeaddrinfo( addr_list );
-
+#endif 
     return ( ret );
 }
 
@@ -138,7 +140,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
     if ( ( ret = net_prepare() ) != 0 ) {
         return ( ret );
     }
-
+#if 0
     /* Bind to IPv6 and/or IPv4, but only in the desired protocol */
     memset( &hints, 0, sizeof( hints ) );
     hints.ai_family = AF_UNSPEC;
@@ -192,7 +194,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
     }
 
     freeaddrinfo( addr_list );
-
+#endif 
     return ( ret );
 
 }
@@ -210,7 +212,7 @@ static int net_would_block( const mbedtls_net_context *ctx, int *errout )
     if ( errout ) {
         *errout = error;
     }
-
+#if 0
     switch ( error ) {
 #if defined EAGAIN
     case EAGAIN:
@@ -220,6 +222,7 @@ static int net_would_block( const mbedtls_net_context *ctx, int *errout )
 #endif
         return ( 1 );
     }
+#endif 
     return ( 0 );
 }
 
@@ -237,7 +240,7 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
 
     socklen_t n = (socklen_t) sizeof( client_addr );
     socklen_t type_len = (socklen_t) sizeof( type );
-
+#if 0
     /* Is this a TCP or UDP socket? */
     if ( getsockopt( bind_ctx->fd, SOL_SOCKET, SO_TYPE,
                      (void *) &type, (socklen_t *) &type_len ) != 0 ||
@@ -304,7 +307,7 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
 
         memcpy( client_ip, &addr4->sin_addr.s_addr, *ip_len );
     }
-
+#endif 
     return ( 0 );
 }
 
@@ -313,12 +316,14 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
  */
 int mbedtls_net_set_block( mbedtls_net_context *ctx )
 {
-    return ( fcntl( ctx->fd, F_SETFL, fcntl( ctx->fd, F_GETFL, 0 ) & ~O_NONBLOCK ) );
+    // return ( fcntl( ctx->fd, F_SETFL, fcntl( ctx->fd, F_GETFL, 0 ) & ~O_NONBLOCK ) );
+    return 0;
 }
 
 int mbedtls_net_set_nonblock( mbedtls_net_context *ctx )
 {
-    return ( fcntl( ctx->fd, F_SETFL, fcntl( ctx->fd, F_GETFL, 0 ) | O_NONBLOCK ) );
+    // return ( fcntl( ctx->fd, F_SETFL, fcntl( ctx->fd, F_GETFL, 0 ) | O_NONBLOCK ) );
+    return 0;
 }
 
 /*
@@ -337,6 +342,8 @@ void mbedtls_net_usleep( unsigned long usec )
  */
 int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
 {
+#if 0
+
     int ret;
     int fd = ((mbedtls_net_context *) ctx)->fd;
     int error = 0;
@@ -361,9 +368,11 @@ int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
         }
 
         return ( MBEDTLS_ERR_NET_RECV_FAILED );
-    }
-
+    } 
     return ( ret );
+#endif 
+
+     return ( MBEDTLS_ERR_NET_INVALID_CONTEXT );
 }
 
 /*
@@ -372,6 +381,7 @@ int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
 int mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
                               uint32_t timeout )
 {
+#if 0
     int ret;
     struct timeval tv;
     fd_set read_fds;
@@ -404,6 +414,8 @@ int mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
 
     /* This call will not block */
     return ( mbedtls_net_recv( ctx, buf, len ) );
+#endif 
+    return ( MBEDTLS_ERR_NET_INVALID_CONTEXT );
 }
 
 /*
@@ -411,6 +423,7 @@ int mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
  */
 int mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len )
 {
+#if 0
     int ret;
     int fd = ((mbedtls_net_context *) ctx)->fd;
 
@@ -439,6 +452,8 @@ int mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len )
     }
 
     return ( ret );
+#endif 
+    return ( MBEDTLS_ERR_NET_INVALID_CONTEXT );
 }
 
 /*
@@ -446,6 +461,7 @@ int mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len )
  */
 void mbedtls_net_free( mbedtls_net_context *ctx )
 {
+#if 0
     if ( ctx->fd == -1 ) {
         return;
     }
@@ -454,6 +470,7 @@ void mbedtls_net_free( mbedtls_net_context *ctx )
     closesocket( ctx->fd );
 
     ctx->fd = -1;
+#endif 
 }
 
 #endif /* MBEDTLS_NET_C */

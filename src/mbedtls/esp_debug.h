@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-#include "sdkconfig.h"
+#include "arduino_config.h"
 #ifdef CONFIG_MBEDTLS_DEBUG
 
 /** @brief Enable mbedTLS debug logging via the esp_log mechanism.

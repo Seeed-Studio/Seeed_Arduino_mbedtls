@@ -2,11 +2,11 @@
 #define __SEEED_MBEDTLS_H__
 
 #ifndef MBEDTLS_CONFIG_FILE
-#define MBEDTLS_CONFIG_FILE "../port/include/mbedtls/esp_config.h"
+#define MBEDTLS_CONFIG_FILE "arduino_config.h"
 #endif
 
-#include "mbedtls/ssl.h"
-#include "mbedtls/esp_debug.h"
 #include "mbedtls/md5.h"
-
+#include "mbedtls/md.h"
+#include "mbedtls/base64.h"
+#include "mbedtls/sha256.h"
 #endif//__SEEED_MBEDTLS_H__

@@ -14,12 +14,12 @@
 
 #include <strings.h>
 
-#include "esp_log.h"
+//#include "esp_log.h"
 #include "mbedtls/platform.h"
 #include "mbedtls/debug.h"
 #include "mbedtls/ssl.h"
 #include "mbedtls/esp_debug.h"
-#include "esp_hal_log.h"
+//#include "esp_hal_log.h"
 
 #ifdef CONFIG_MBEDTLS_DEBUG
 static const char *TAG = "mbedtls";
@@ -30,23 +30,11 @@ static void mbedtls_esp_debug(void *ctx, int level,
 
 void mbedtls_esp_enable_debug_log(mbedtls_ssl_config *conf, int threshold)
 {
-    esp_log_level_t level = ESP_LOG_NONE;
+    unsigned char level = 0;
     mbedtls_debug_set_threshold(threshold);
     mbedtls_ssl_conf_dbg(conf, mbedtls_esp_debug, NULL);
-    switch(threshold) {
-    case 1:
-        level = ESP_LOG_WARN;
-        break;
-    case 2:
-        level = ESP_LOG_INFO;
-        break;
-    case 3:
-        level = ESP_LOG_DEBUG;
-        break;
-    case 4:
-        level = ESP_LOG_VERBOSE;
-        break;
-    }
+    if (threshold < 6)
+        level = threshold;
     // esp_log_level_set(TAG, level);
 }
 

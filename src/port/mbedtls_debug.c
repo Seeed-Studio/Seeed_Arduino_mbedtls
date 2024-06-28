@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <strings.h>
+#include <string.h>
 
 //#include "esp_log.h"
 #include "mbedtls/platform.h"
@@ -58,7 +58,7 @@ static void mbedtls_esp_debug(void *ctx, int level,
        This is a bit wasteful because the macros are compiled in with
        the full _FILE_ path in each case.
     */
-    file_sep = rindex(file, '/');
+    file_sep = strrchr(file, '/');
     if(file_sep)
         file = file_sep+1;
 
